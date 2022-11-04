@@ -1,5 +1,5 @@
 import client from "../../../database/database";
-import { Pools } from "../../Types/types";
+import { Pools } from "../../Types/types-d";
 
 export async function createPool(pool:Pools) {
 

@@ -2,28 +2,32 @@ import { FastifyRequest, FastifyReply } from "fastify";
 import {z} from 'zod'
 import ShortUniqueId from 'short-unique-id';
 import * as poolRepository from './pool.repository'
-import { Pools, reqPools } from "../../Types/types";
+import { PoolWeb } from "../../Types/types-d";
+import { request } from "http";
 
 
-export async function createPoolService(data:reqPools){
+export async function createPoolService(title:string, verified:boolean){
 
   const uid = new ShortUniqueId();
   const code = String(uid()).toUpperCase()
+  let ownerId = null
 
-  const createPoolBody = z.object({
-    title: z.string(),
-    ownerId: z.string().nullable()
-  })
-
-  const {title, ownerId} = createPoolBody.parse(data)
-
-  const pool: Pools = {
+  const poolWeb: PoolWeb = {
     title,
-    code,
-    ownerId
+    code
   }
 
-  const response = await poolRepository.createPool(pool)
+  if(verified){
 
-  return response
+    const response = await poolRepository.createPool(poolWeb)
+    return response
+  
+  } else{
+  
+    const response = await poolRepository.createPool()
+    return response
+  
+  }
+
+
 }
